@@ -1,0 +1,21 @@
+{
+  "name": "NeighborhoodMap",
+  "authors": [
+    "guilhg2@gmail.com"
+  ],
+  "description": "Mapping of Pizzarias :)",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "github.com/wolvery",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "knockout": "^3.4.2"
+  }
+}
