@@ -13,8 +13,8 @@ var infoContent = '<div id="content">' +
     '$address$' + 
     '</div>' +
     '</div>';
-var greenIcon = 'http://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=snack|008000';
-var whiteIcon = 'http://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=repair|FFFFFF';
+var greenIcon = 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=snack|008000';
+var whiteIcon = 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=repair|FFFFFF';
 
 
 function initMap() {
@@ -221,7 +221,7 @@ function toggleBounce(marker) {
 
 function getClimateAtBH() {
     $.ajax({
-        url: 'http://api.openweathermap.org/data/2.5/weather?q=belo%20horizonte,br&appid=41ed607378c57096980252995587b30d'
+        url: 'https://api.openweathermap.org/data/2.5/weather?q=belo%20horizonte,br&appid=41ed607378c57096980252995587b30d'
     }).done(function (result) {
         document.getElementById("climate").append("BH's weather has " + result.weather["0"].description);
     }).fail(function () {
