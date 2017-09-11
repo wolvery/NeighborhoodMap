@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Geocoding service</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- bower:css -->
+  <!-- endbower -->
+</head>
+
+<body>
+  <div id="floating-panel">
+    <h3>Best Pizzerias at BH</h3>
+    <p> Some of the best pizzerias at BH</p>
+
+    <select id="pizzaElement" class="form-control"> 
+          <option > Select here...</option>       
+          
+        <!-- ko foreach: locations -->
+        <option data-bind="text: title"></option>
+        <!-- /ko -->
+        <option >All pizzeria</option>
+      </select>
+    <div><p  id="climate"></p></div>
+
+  </div>
+  <div id="map"></div>
+  <script src="js/api.js"></script>
+  <!-- bower:js -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="bower_components/knockout/dist/knockout.js"></script>
+  <!-- endbower -->
+  <!--TODO: Insert your API Key in the below call to load the API.-->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyByMB7GsqM0NhCCQNV6OAvvVDIoMESVU_4&callback=initMap&libraries=places">
+
+  </script>
+</body>
+
+</html>
