@@ -6,7 +6,7 @@ I have selected some cool pizzeria around the northern part of BH and point out 
 
 
 ### How to use
-Well, you just need to access this page:
+Well, you just need to access this page: https://wolvery.github.io/NeighborhoodMap/
 
 
 ### Future improvement
