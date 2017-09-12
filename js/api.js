@@ -225,7 +225,7 @@ var initMap = function() {
 
 
     
-}
+};
 
 
 
