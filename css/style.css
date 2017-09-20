@@ -39,3 +39,15 @@
         font-weight: 800;
         cursor: pointer;
       }
+
+      @media screen and (max-width:750px) {
+        #map {
+          height: 40%;
+          width: 100%;
+        }
+
+        #floating-panel {
+          height: 60%;
+        }
+        
+      }
