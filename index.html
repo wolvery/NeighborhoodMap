@@ -13,30 +13,31 @@
 </head>
 
 <body>
-  <div id="floating-panel">
-    <h3>Best Pizzerias at BH</h3>
-    <p> Some of the best pizzerias at BH</p>
-
-    <select id="pizzaElement" class="form-control"> 
-          <option > Select here...</option>       
-          
-        <!-- ko foreach: locations -->
-        <option data-bind="text: title"></option>
+  <aside id="floating-panel" class="col-sm-3 col-lg-2">
+    <h3>Best Pizzerias</h3>
+    <h5>BH's weather, now, has <span data-bind="text:  weatherInfo"></span> .</h5> 
+    <p>Find best pizzerias at BH:</p>
+    <input type="text" class="form-control" data-bind="value: locationFilter, valueUpdate: 'afterkeydown'"/>
+    <nav class="navbar  navbar-inverse navbar-fixed-top ">
+      <ul id="pizzaElement" class="nav sidebar-nav">
+        <!-- ko foreach: filteredLocations -->
+        <li data-bind="text: title,event: { mouseover: gmapsHandler.mouseEffect, click: gmapsHandler.focusOnMarker, mouseout: gmapsHandler.mouseEffect }"></li>
         <!-- /ko -->
-        <option >All pizzeria</option>
-      </select>
-    <div><p  id="climate"></p></div>
-
-  </div>
-  <div id="map"></div>
-  <script src="js/api.js"></script>
+        <li  data-bind="click: gmapsHandler.focusOnMarker('All pizzeria')">All pizzeria</li>
+      </ul>
+    </nav>
+       
+  </aside>
+  <section id="map"></section>
   <!-- bower:js -->
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-  <script src="bower_components/knockout/dist/knockout.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script> 
+  <script src="bower_components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+  <script src="bower_components/knockout/dist/knockout.js" type="text/javascript"></script>
   <!-- endbower -->
+  <script src="js/api.js" type="text/javascript"></script>
+  
   <!--TODO: Insert your API Key in the below call to load the API.-->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyByMB7GsqM0NhCCQNV6OAvvVDIoMESVU_4&callback=initMap&libraries=places">
+  <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyByMB7GsqM0NhCCQNV6OAvvVDIoMESVU_4&callback=gmapsHandler.init&libraries=places">
 
   </script>
 </body>

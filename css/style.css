@@ -9,24 +9,33 @@
         height: 100%;
       }
       #floating-panel {
-        position: absolute;
-        top: 10px;
-        left: 65%;
-        z-index: 5;
-        height: 30%;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-        text-align: center;
-        font-family: 'Roboto','sans-serif';
-        line-height: 30px;
-        padding-left: 10px;
-        text-shadow: 0 -1px 0 #000;
-        border: 2px solid #192B9D;
-        border-radius: 12px;
+        float: left;
+        border-right: 3px solid #e9ecef;
+        height: 100%;
       }
       #climate {
         color:#192B9D;
 
       }
       
+      .sidebar-nav {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+        width: 220px;
+      }
+      .sidebar-nav li {
+        display: inline-block;
+        line-height: 30px;                
+        position: relative;
+        width: 100%;
+        font-weight: 500;
+        color: rgba(0,0,0,.65);
+      }
+      .sidebar-nav li:hover {
+        color: rgba(29, 28, 28, 0.65);
+        font-weight: 800;
+        cursor: pointer;
+      }
