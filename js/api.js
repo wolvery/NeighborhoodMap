@@ -1,7 +1,7 @@
 
 
 var data = {
-    infoContent : '<div id="content">' +
+    infoContent: '<div id="content">' +
     '<div >' +
     '<h3>$TITLE$</h3>' +
     '</div>' +
@@ -12,15 +12,15 @@ var data = {
     '$open_hours$' +
     '<br>' +
     'STARS: $reviews$' +
-    '<br>' +    
-    'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>'+    
+    '<br>' +
+    'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>' +
     '<br>' +
     '$address$' +
-    '<br>' +    
+    '<br>' +
     '</div>' +
     '</div>',
-    greenIcon : 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=snack|008000',
-    whiteIcon :'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=repair|FFFFFF',
+    greenIcon: 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=snack|008000',
+    whiteIcon: 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=repair|FFFFFF',
     locations: [{
         title: 'Nino Pizzaria',
         location: {
@@ -30,8 +30,8 @@ var data = {
         place_id: 'ChIJdSpkyhiXpgAR7gjs9rYB0qo',
         foursquare_id: '4bd0d43fb221c9b6d385d4d0',
         foursquare_rating: '',
-        foursquare_color:'red'
-        
+        foursquare_color: 'red'
+
     }, {
         title: 'La Pizzabella',
         location: {
@@ -41,7 +41,7 @@ var data = {
         place_id: 'ChIJg3G4cWyXpgARvFTNfFTSUVA',
         foursquare_id: '4ea4317de3008f7d92cefc90',
         foursquare_rating: '',
-        foursquare_color:'red'
+        foursquare_color: 'red'
     }, {
         title: 'Pizza no Galpão',
         location: {
@@ -51,7 +51,7 @@ var data = {
         place_id: 'ChIJ37jOSWqXpgARiWddZYPVU1Q',
         foursquare_id: '51d364a1498e2527fb50233a',
         foursquare_rating: '',
-        foursquare_color:'red'
+        foursquare_color: 'red'
     }, {
         title: 'Pomodori Del Rey',
         location: {
@@ -61,7 +61,7 @@ var data = {
         place_id: 'ChIJvfwA0MWQpgAROtXtI1JnRgY',
         foursquare_id: '55145e0d498e9dee8f2f4024',
         foursquare_rating: '',
-        foursquare_color:'red'
+        foursquare_color: 'red'
     }, {
         title: 'Pizzaria Porto',
         location: {
@@ -71,52 +71,55 @@ var data = {
         place_id: 'ChIJewiKK1mXpgARg7vmjx55ZMk',
         foursquare_id: '509e77d4e4b03888250492b1',
         foursquare_rating: '',
-        foursquare_color:'red'
+        foursquare_color: 'red'
     }],
-    weather:null,
-    loadRating : function(result,status){
-        var id = 0;
-        data.locations.forEach(function (element) {
-            if (result.response.venue.id == element.foursquare_id){
-                if (status){
-                    data.locations[id].foursquare_color ="#" + result.response.venue.ratingColor;
-                    data.locations[id].foursquare_rating =  result.response.venue.rating;
-                }else{
-                    data.locations[i].foursquare_rating = "NO RATING FOUND.";
-                    data.locations[i].foursquare_color = "red"; 
-                }
-
-            }
-            id+=1;
-        });
+    weather: null,
+    loadRating: function (result, status, id) {                
+        if (!status) {
+            data.locations[id].foursquare_rating = "NO RATING FOUND.";
+            data.locations[id].foursquare_color = "red";
+        }
+        else {
+            console.log(result);
+            console.log(status);
+            console.log(id);            
+            data.locations[id].foursquare_color = "#" + result.response.venue.ratingColor;
+            data.locations[id].foursquare_rating = result.response.venue.rating;
+        }
     }
 };
-var stringStartsWith = function (string, startsWith) {          
+var stringContains = function (string, startsWith) {
     string = string || "";
     if (startsWith.length > string.length)
         return false;
-    return string.substring(0, startsWith.length) === startsWith;
+    return (string.indexOf(startsWith) !== -1);
 };
 
 
 
-var viewModel = function() {
+var viewModel = function () {
     var self = this;
-    this.locationFilter= ko.observable();
-    this.weatherInfo= ko.observable(data.weather);
+    this.locationFilter = ko.observable();
+    this.weatherInfo = ko.observable(data.weather);
 
-    this.items= ko.observableArray(data.locations);
+    this.items = ko.observableArray(data.locations);
 
-    this.filteredLocations= ko.computed(function () {
+    this.filteredLocations = ko.computed(function () {
         var filter = this.locationFilter();
         if (!filter) {
-            return this.items();
+            return gmapsHandler.cleanPage(this.items()) ;
         } else {
-            return ko.utils.arrayFilter(this.items(), function (item) {
-                return stringStartsWith(item.title.toLowerCase(), filter.toLowerCase());
-            });
+            return gmapsHandler.cleanPage(ko.utils.arrayFilter(this.items(), function (item) {
+                return stringContains(item.title.toLowerCase(), filter.toLowerCase());
+            }));
+
         }
-    },this);
+    }, this);
+
+    this.reset = function(){
+        self.locationFilter(null);
+    }
+    //obtain weather data!
 
     $.ajax({
         url: 'https://api.openweathermap.org/data/2.5/weather?q=belo%20horizonte,br&appid=41ed607378c57096980252995587b30d'
@@ -124,9 +127,9 @@ var viewModel = function() {
         self.weatherInfo(result.weather["0"].description);
     }).fail(function () {
         alert("Could not find out the proper weather to BH. Sorry :/");
-        self.weatherInfo  ("No info");
+        self.weatherInfo("No info");
     });
-    
+
 };
 
 
@@ -140,6 +143,7 @@ var viewModel = function() {
 
 var gmapsHandler = {
     map: null,
+    model:null,
     service: null,
     largeInfowindow: null,
     bounds: null,
@@ -153,7 +157,7 @@ var gmapsHandler = {
         }
     },
     mouseEffect: function (pizzeria) {
-        
+
         for (var i = 0; i < gmapsHandler.markerList.length; i++) {
             if (pizzeria.title === (gmapsHandler.markerList[i].title)) {
                 //animate it
@@ -161,10 +165,6 @@ var gmapsHandler = {
             }
         }
     },
-    getWeather: function () {
-        
-        
-    },   
 
     //load information to some marker.
     loadInfo: function (result, status, marker, infowindow) {
@@ -208,33 +208,59 @@ var gmapsHandler = {
 
         }
         data.locations.forEach(function (element) {
-            if (marker.title == element.title){
+            if (marker.title == element.title) {
                 //replace  $COLOR$  $FOURSQUARE_REVIEW$ to those returned from foursquare
-                tempInfoContent = tempInfoContent.replace("$COLOR$",element.foursquare_color);
-                tempInfoContent = tempInfoContent.replace("$FOURSQUARE_REVIEW$",element.foursquare_rating);                
+                tempInfoContent = tempInfoContent.replace("$COLOR$", element.foursquare_color);
+                tempInfoContent = tempInfoContent.replace("$FOURSQUARE_REVIEW$", element.foursquare_rating);
             }
         });
         infowindow.setContent(tempInfoContent);
         infowindow.open(self.map, marker);
     },
-
-
-    focusOnMarker: function (pizzeria) {
-
+    cleanPage: function (pizzeriaList) {
         var reference = gmapsHandler;
+        var pizzeriaListNames = [];
+        console.log(pizzeriaList);
+        pizzeriaList.forEach(function (element) { pizzeriaListNames.push(element.title); });
+        for (var i = 0; i < reference.markerList.length; i++) {
+            if (pizzeriaListNames.includes(reference.markerList[i].title)) {
+                reference.markerList[i].setVisible(true);
+            } else {
+                reference.markerList[i].setVisible(false);
+            }
+        }
+        return pizzeriaList;
+
+    },
+    focusOnMarker: function (pizzeria) {
+        
+        var reference = gmapsHandler;
+        if (reference.model !== null){
+            reference.model.reset();
+        }
+        /* if (typeof locationFilter === "function") {
+            console.log(locationFilter());
+            if (locationFilter().length > 0) {
+                locationFilter(null);
+            }
+            console.log(locationFilter());
+            
+        } */
         if (reference.map !== null) {
             var boundsFocus = new google.maps.LatLngBounds();
-
-            //hide all markers besides the selected
             for (var i = 0; i < reference.markerList.length; i++) {
+
                 if (pizzeria === "All pizzeria") {
+                    //reload evey marker
                     reference.largeInfowindow.close();
                     reference.markerList[i].setVisible(true);
                     reference.markerList[i].setAnimation(null);
+                    reference.markerList[i].setIcon(null);
                     // reload the bound
                     boundsFocus.extend(reference.markerList[i].position);
                 }
                 else {
+                    //hide all markers besides the selected
                     if (pizzeria.title === (reference.markerList[i].title)) {
                         reference.markerList[i].setVisible(true);
                         // reload the bound
@@ -285,14 +311,14 @@ var gmapsHandler = {
     },
     init: function () {
         var self = this;
+        self.model=new viewModel();
         //we need to handle async data to knockout
         ko.options.deferUpdates = true;
-        
-        //ViewModel Initiation
-        ko.applyBindings(new viewModel());
 
-        //obtain weather data!
-        this.getWeather();
+        //ViewModel Initiation
+        ko.applyBindings(this.model);
+
+
         //https://review.udacity.com/#!/rubrics/17/view
 
 
@@ -324,18 +350,19 @@ var gmapsHandler = {
                 place_id: element.place_id
             });
             $.ajax({
-                url: "https://api.foursquare.com/v2/venues/"+ element.foursquare_id +"?client_id=TUZV0ET1ASDYJDXTMAI1OFECNFGGTSTU3201V1X05MNP0RIR&client_secret=IRVOT1LJ3EUWB14UMIN4KKZQRXQS2SKD0NLP5DVX254B5CEU&v=20500909"
+                url: "https://api.foursquare.com/v2/venues/" + element.foursquare_id + "?client_id=TUZV0ET1ASDYJDXTMAI1OFECNFGGTSTU3201V1X05MNP0RIR&client_secret=IRVOT1LJ3EUWB14UMIN4KKZQRXQS2SKD0NLP5DVX254B5CEU&v=20500909",
+                custom: i
             }).done(function (result) {
-                console.log(result.response);
-               data.loadRating(result,true);
+                data.loadRating(result, true, this.custom);
             }).fail(function () {
-                data.loadRating(result,false);  
+                data.loadRating(null, false, this.custom);
             });
+            i += 1;
+            
             self.markerList.push(marker);
             marker.addListener('click', function () {
                 self.populateInfoWindow(this, self.largeInfowindow);
-            i += 1;
-            
+
             });
             self.bounds.extend(marker.position);
 
@@ -347,7 +374,9 @@ var gmapsHandler = {
 
 };
 
-
+function googleError(){
+    alert("Could not load Gmaps. Please reload this page.");
+}
 
 
 
