@@ -1,24 +1,7 @@
 
 
 var data = {
-    infoContent: '<div id="content">' +
-    '<div >' +
-    '<h3>$TITLE$</h3>' +
-    '</div>' +
-    '<br>' +
-    '<div id="bodyContent">' +
-    '$status$' +
-    '<br>' +
-    '$open_hours$' +
-    '<br>' +
-    'STARS: $reviews$' +
-    '<br>' +
-    'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>' +
-    '<br>' +
-    '$address$' +
-    '<br>' +
-    '</div>' +
-    '</div>',
+
     greenIcon: 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=snack|008000',
     whiteIcon: 'https://chart.googleapis.com/chart?chst=d_map_pin_icon&chld=repair|FFFFFF',
     locations: [{
@@ -168,23 +151,51 @@ var gmapsHandler = {
 
     //load information to some marker.
     loadInfo: function (result, status, marker, infowindow) {
-
-        var tempInfoContent = data.infoContent.replace("$TITLE$", marker.title);
+            
+        
+        var tempInfoContent = '<div id="content">' +
+        '<div >' +
+        '<h3>'+ marker.title + '</h3>' ;
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             if (result.opening_hours.open_now) {
-                tempInfoContent = tempInfoContent.replace("$status$", "It is open, now! :)");
+                tempInfoContent += '</div>' +
+                '<br>' +
+                '<div id="bodyContent">' + "It is open, now! :)"+
+                '<br>';
                 marker.setIcon(data.greenIcon);
             } else {
-                tempInfoContent = tempInfoContent.replace("$status$", "It is closed, now! :/");
+                tempInfoContent += '</div>' +
+                '<br>' +
+                '<div id="bodyContent">' +  "It is closed, now! :/"+
+                '<br>';
                 marker.setIcon(data.whiteIcon);
             }
+            if (result.opening_hours.weekday_text) {
+                var today = new Date().getDay() - 1;
+                today = (today < 0) ? 6 : today;
 
-            if (result.rating) {
-                tempInfoContent = tempInfoContent.replace("$reviews$", result.rating);
+                tempInfoContent +=  result.opening_hours.weekday_text[today]+
+                '<br>';
             } else {
-                tempInfoContent = tempInfoContent.replace("$reviews$", "NONE");
+                tempInfoContent +=  ""+
+                '<br>';
             }
-
+            if (result.rating) {
+                tempInfoContent += 
+                'STARS: ' +  result.rating + 
+                '<br>' ;
+            } else {
+                tempInfoContent += 
+                'STARS: NONE' +
+                '<br>' ;
+                
+            }
+            tempInfoContent += 'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>' +
+            '<br>' +
+            '$address$' +
+            '<br>' +
+            '</div>' +
+            '</div>';
             if (result.formatted_address) {
                 tempInfoContent = tempInfoContent.replace("$address$", result.formatted_address);
             } else {
@@ -192,20 +203,20 @@ var gmapsHandler = {
 
             }
 
-            if (result.opening_hours.weekday_text) {
-                var today = new Date().getDay() - 1;
-                today = (today < 0) ? 6 : today;
-
-                tempInfoContent = tempInfoContent.replace("$open_hours$", result.opening_hours.weekday_text[today]);
-            } else {
-                tempInfoContent = tempInfoContent.replace("$open_hours$", "");
-            }
+            
         } else {
-            tempInfoContent = tempInfoContent.replace("$status$", "We do not have more info about this place. :/");
-            tempInfoContent = tempInfoContent.replace("$address$", "But, it is good. Trust me.");
-            tempInfoContent = tempInfoContent.replace("$open_hours$", "");
-            tempInfoContent = tempInfoContent.replace("$reviews$", "");
-
+            tempInfoContent += '</div>' +
+            '<br>' +
+            '<div id="bodyContent">' + "We do not have more info about this place. :/"+
+            '<br>';
+            tempInfoContent +=  "But, it is good. Trust me."
+            '<br>';
+            tempInfoContent += 'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>' +
+            '<br>' +
+            '$address$' +
+            '<br>' +
+            '</div>' +
+            '</div>';
         }
         data.locations.forEach(function (element) {
             if (marker.title == element.title) {
