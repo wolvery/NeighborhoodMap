@@ -101,7 +101,7 @@ var viewModel = function () {
 
     this.reset = function(){
         self.locationFilter(null);
-    }
+    };
     //obtain weather data!
 
     $.ajax({
@@ -209,7 +209,7 @@ var gmapsHandler = {
             '<br>' +
             '<div id="bodyContent">' + "We do not have more info about this place. :/"+
             '<br>';
-            tempInfoContent +=  "But, it is good. Trust me."
+            tempInfoContent +=  "But, it is good. Trust me."+
             '<br>';
             tempInfoContent += 'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>' +
             '<br>' +
