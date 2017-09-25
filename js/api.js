@@ -57,7 +57,7 @@ var data = {
         foursquare_color: 'red'
     }],
     weather: null,
-    loadRating: function (result, status, id) {                
+    loadRating: function (result, status, id) {
         if (!status) {
             data.locations[id].foursquare_rating = "NO RATING FOUND.";
             data.locations[id].foursquare_color = "red";
@@ -65,7 +65,7 @@ var data = {
         else {
             console.log(result);
             console.log(status);
-            console.log(id);            
+            console.log(id);
             data.locations[id].foursquare_color = "#" + result.response.venue.ratingColor;
             data.locations[id].foursquare_rating = result.response.venue.rating;
         }
@@ -90,7 +90,7 @@ var viewModel = function () {
     this.filteredLocations = ko.computed(function () {
         var filter = this.locationFilter();
         if (!filter) {
-            return gmapsHandler.cleanPage(this.items()) ;
+            return gmapsHandler.cleanPage(this.items());
         } else {
             return gmapsHandler.cleanPage(ko.utils.arrayFilter(this.items(), function (item) {
                 return stringContains(item.title.toLowerCase(), filter.toLowerCase());
@@ -99,7 +99,7 @@ var viewModel = function () {
         }
     }, this);
 
-    this.reset = function(){
+    this.reset = function () {
         self.locationFilter(null);
     };
     //obtain weather data!
@@ -126,7 +126,7 @@ var viewModel = function () {
 
 var gmapsHandler = {
     map: null,
-    model:null,
+    model: null,
     service: null,
     largeInfowindow: null,
     bounds: null,
@@ -151,51 +151,51 @@ var gmapsHandler = {
 
     //load information to some marker.
     loadInfo: function (result, status, marker, infowindow) {
-            
-        
+
+
         var tempInfoContent = '<div id="content">' +
-        '<div >' +
-        '<h3>'+ marker.title + '</h3>' ;
+            '<div >' +
+            '<h3>' + marker.title + '</h3>';
         if (status == google.maps.places.PlacesServiceStatus.OK) {
             if (result.opening_hours.open_now) {
                 tempInfoContent += '</div>' +
-                '<br>' +
-                '<div id="bodyContent">' + "It is open, now! :)"+
-                '<br>';
+                    '<br>' +
+                    '<div id="bodyContent">' + "It is open, now! :)" +
+                    '<br>';
                 marker.setIcon(data.greenIcon);
             } else {
                 tempInfoContent += '</div>' +
-                '<br>' +
-                '<div id="bodyContent">' +  "It is closed, now! :/"+
-                '<br>';
+                    '<br>' +
+                    '<div id="bodyContent">' + "It is closed, now! :/" +
+                    '<br>';
                 marker.setIcon(data.whiteIcon);
             }
             if (result.opening_hours.weekday_text) {
                 var today = new Date().getDay() - 1;
                 today = (today < 0) ? 6 : today;
 
-                tempInfoContent +=  result.opening_hours.weekday_text[today]+
-                '<br>';
+                tempInfoContent += result.opening_hours.weekday_text[today] +
+                    '<br>';
             } else {
-                tempInfoContent +=  ""+
-                '<br>';
+                tempInfoContent += "" +
+                    '<br>';
             }
             if (result.rating) {
-                tempInfoContent += 
-                'STARS: ' +  result.rating + 
-                '<br>' ;
+                tempInfoContent +=
+                    'STARS: ' + result.rating +
+                    '<br>';
             } else {
-                tempInfoContent += 
-                'STARS: NONE' +
-                '<br>' ;
-                
+                tempInfoContent +=
+                    'STARS: NONE' +
+                    '<br>';
+
             }
             tempInfoContent += 'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>' +
-            '<br>' +
-            '$address$' +
-            '<br>' +
-            '</div>' +
-            '</div>';
+                '<br>' +
+                '$address$' +
+                '<br>' +
+                '</div>' +
+                '</div>';
             if (result.formatted_address) {
                 tempInfoContent = tempInfoContent.replace("$address$", result.formatted_address);
             } else {
@@ -203,20 +203,20 @@ var gmapsHandler = {
 
             }
 
-            
+
         } else {
             tempInfoContent += '</div>' +
-            '<br>' +
-            '<div id="bodyContent">' + "We do not have more info about this place. :/"+
-            '<br>';
-            tempInfoContent +=  "But, it is good. Trust me."+
-            '<br>';
+                '<br>' +
+                '<div id="bodyContent">' + "We do not have more info about this place. :/" +
+                '<br>';
+            tempInfoContent += "But, it is good. Trust me." +
+                '<br>';
             tempInfoContent += 'FOURSQUARE:<p style="color:$COLOR$;">$FOURSQUARE_REVIEW$</p>' +
-            '<br>' +
-            '$address$' +
-            '<br>' +
-            '</div>' +
-            '</div>';
+                '<br>' +
+                '$address$' +
+                '<br>' +
+                '</div>' +
+                '</div>';
         }
         data.locations.forEach(function (element) {
             if (marker.title == element.title) {
@@ -225,8 +225,16 @@ var gmapsHandler = {
                 tempInfoContent = tempInfoContent.replace("$FOURSQUARE_REVIEW$", element.foursquare_rating);
             }
         });
+
         infowindow.setContent(tempInfoContent);
         infowindow.open(self.map, marker);
+        reference = gmapsHandler;
+        for (var i = 0; i < reference.markerList.length; i++) {
+            if (marker.title !== (reference.markerList[i].title)) {
+                reference.markerList[i].setAnimation(null);
+                reference.markerList[i].setIcon(null);
+            }
+        }
     },
     cleanPage: function (pizzeriaList) {
         var reference = gmapsHandler;
@@ -244,9 +252,9 @@ var gmapsHandler = {
 
     },
     focusOnMarker: function (pizzeria) {
-        
+
         var reference = gmapsHandler;
-        if (reference.model !== null){
+        if (reference.model !== null) {
             reference.model.reset();
         }
         /* if (typeof locationFilter === "function") {
@@ -260,6 +268,7 @@ var gmapsHandler = {
         if (reference.map !== null) {
             var boundsFocus = new google.maps.LatLngBounds();
             for (var i = 0; i < reference.markerList.length; i++) {
+
 
                 if (pizzeria === "All pizzeria") {
                     //reload evey marker
@@ -322,7 +331,7 @@ var gmapsHandler = {
     },
     init: function () {
         var self = this;
-        self.model=new viewModel();
+        self.model = new viewModel();
         //we need to handle async data to knockout
         ko.options.deferUpdates = true;
 
@@ -369,7 +378,7 @@ var gmapsHandler = {
                 data.loadRating(null, false, this.custom);
             });
             i += 1;
-            
+
             self.markerList.push(marker);
             marker.addListener('click', function () {
                 self.populateInfoWindow(this, self.largeInfowindow);
@@ -385,7 +394,7 @@ var gmapsHandler = {
 
 };
 
-function googleError(){
+function googleError() {
     alert("Could not load Gmaps. Please reload this page.");
 }
 
