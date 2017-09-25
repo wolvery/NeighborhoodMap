@@ -80,7 +80,7 @@ var stringContains = function (string, startsWith) {
 
 
 
-var viewModel = function () {
+var ViewModel = function () {
     var self = this;
     this.locationFilter = ko.observable();
     this.weatherInfo = ko.observable(data.weather);
@@ -90,9 +90,9 @@ var viewModel = function () {
     this.filteredLocations = ko.computed(function () {
         var filter = this.locationFilter();
         if (!filter) {
-            return gmapsHandler.cleanPage(this.items());
+            return GmapsHandler.cleanPage(this.items());
         } else {
-            return gmapsHandler.cleanPage(ko.utils.arrayFilter(this.items(), function (item) {
+            return GmapsHandler.cleanPage(ko.utils.arrayFilter(this.items(), function (item) {
                 return stringContains(item.title.toLowerCase(), filter.toLowerCase());
             }));
 
@@ -124,12 +124,13 @@ var viewModel = function () {
 
 
 
-var gmapsHandler = {
+var GmapsHandler = {
     map: null,
     model: null,
     service: null,
     largeInfowindow: null,
     bounds: null,
+    previousMarker:null,
     //list of makers
     markerList: [],
     toggleBounce: function (marker) {
@@ -141,17 +142,20 @@ var gmapsHandler = {
     },
     mouseEffect: function (pizzeria) {
 
-        for (var i = 0; i < gmapsHandler.markerList.length; i++) {
-            if (pizzeria.title === (gmapsHandler.markerList[i].title)) {
+        for (var i = 0; i < GmapsHandler.markerList.length; i++) {
+            if (pizzeria.title === (GmapsHandler.markerList[i].title)) {
                 //animate it
-                gmapsHandler.toggleBounce(gmapsHandler.markerList[i]);
+                GmapsHandler.toggleBounce(GmapsHandler.markerList[i]);
             }
         }
     },
 
     //load information to some marker.
     loadInfo: function (result, status, marker, infowindow) {
-
+        if (GmapsHandler.previousMarker !== null){
+            GmapsHandler.previousMarker.setIcon(null);
+            GmapsHandler.previousMarker.setAnimation(null);
+        }
 
         var tempInfoContent = '<div id="content">' +
             '<div >' +
@@ -228,16 +232,10 @@ var gmapsHandler = {
 
         infowindow.setContent(tempInfoContent);
         infowindow.open(self.map, marker);
-        reference = gmapsHandler;
-        for (var i = 0; i < reference.markerList.length; i++) {
-            if (marker.title !== (reference.markerList[i].title)) {
-                reference.markerList[i].setAnimation(null);
-                reference.markerList[i].setIcon(null);
-            }
-        }
+        GmapsHandler.previousMarker = marker;    
     },
     cleanPage: function (pizzeriaList) {
-        var reference = gmapsHandler;
+        var reference = GmapsHandler;
         var pizzeriaListNames = [];
         console.log(pizzeriaList);
         pizzeriaList.forEach(function (element) { pizzeriaListNames.push(element.title); });
@@ -253,7 +251,7 @@ var gmapsHandler = {
     },
     focusOnMarker: function (pizzeria) {
 
-        var reference = gmapsHandler;
+        var reference = GmapsHandler;
         if (reference.model !== null) {
             reference.model.reset();
         }
@@ -286,7 +284,7 @@ var gmapsHandler = {
                         // reload the bound
                         boundsFocus.extend(reference.markerList[i].position);
                         //animate it
-                        gmapsHandler.toggleBounce(reference.markerList[i]);
+                        GmapsHandler.toggleBounce(reference.markerList[i]);
                         //show the info
                         reference.populateInfoWindow(reference.markerList[i], reference.largeInfowindow);
                     } else {
@@ -331,7 +329,7 @@ var gmapsHandler = {
     },
     init: function () {
         var self = this;
-        self.model = new viewModel();
+        self.model = new ViewModel();
         //we need to handle async data to knockout
         ko.options.deferUpdates = true;
 

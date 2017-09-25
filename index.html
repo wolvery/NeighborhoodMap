@@ -14,7 +14,6 @@
 
 <body>
   <section class="container">
-    
     <aside id="floating-panel">
       <h3>Best Pizzerias</h3>
       <h5>BH's weather, now, has <span data-bind="text:  weatherInfo"></span> .</h5>
@@ -23,14 +22,13 @@
       <nav class="navbar  navbar-inverse navbar-fixed-top ">
         <ul id="pizzaElement" class="nav sidebar-nav">
           <!-- ko foreach: filteredLocations -->
-          <li data-bind="text: title,event: { mouseover: gmapsHandler.mouseEffect, click: gmapsHandler.focusOnMarker, mouseout: gmapsHandler.mouseEffect }"></li>
+          <li data-bind="text: title,event: { mouseover: GmapsHandler.mouseEffect, click: GmapsHandler.focusOnMarker, mouseout: GmapsHandler.mouseEffect }"></li>
           <!-- /ko -->
-          <li data-bind="click: gmapsHandler.focusOnMarker('All pizzeria')">All pizzeria</li>
+          <li data-bind="click: GmapsHandler.focusOnMarker('All pizzeria')">All pizzeria</li>
         </ul>
       </nav>
     </aside>
-    <section id="map" ></section>
-  </section>
+    <section id="map"></section>
   </section>
   <!-- bower:js -->
   <script src="bower_components/jquery/dist/jquery.js" type="text/javascript"></script>
@@ -40,9 +38,10 @@
   <script src="js/api.js" type="text/javascript"></script>
 
   <!--TODO: Insert your API Key in the below call to load the API.-->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyByMB7GsqM0NhCCQNV6OAvvVDIoMESVU_4&callback=gmapsHandler.init&libraries=places" onerror="googleError();">
+  <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyByMB7GsqM0NhCCQNV6OAvvVDIoMESVU_4&callback=GmapsHandler.init&libraries=places"
+    onerror="googleError();">
 
-  </script>
+    </script>
 </body>
 
 </html>
